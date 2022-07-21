@@ -8,6 +8,7 @@ import {
   WalletType,
 } from '@noahsaso/cosmodal'
 import { GasPrice } from '@cosmjs/stargate'
+import { CHAIN_ID } from '../util/constants'
 
 const LOCAL_STORAGE_KEY = 'connectedWalletId'
 
@@ -15,7 +16,7 @@ function MyApp({ Component, pageProps }: AppProps) {
   return (
     <WalletManagerProvider
       walletConnectClientMeta={{
-        name: 'cw-flash-ui',
+        name: 'cw-flash-ui-tutorial',
         description: 'An example frontend for CosmWasm flash loans.',
         url: 'https://cw-flash-ui.vercel.app',
         icons: ['https://moonphase.is/image.svg'],
@@ -23,7 +24,7 @@ function MyApp({ Component, pageProps }: AppProps) {
       enabledWalletTypes={[WalletType.Keplr, WalletType.WalletConnectKeplr]}
       renderLoader={() => <p>Loading...</p>}
       localStorageKey={LOCAL_STORAGE_KEY}
-      defaultChainId={ChainInfoID.Juno1}
+      defaultChainId={CHAIN_ID}
       getSigningCosmWasmClientOptions={(chainInfo) => ({
         gasPrice: GasPrice.fromString(
           '0.0025' + chainInfo.feeCurrencies[0].coinMinimalDenom

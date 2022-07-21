@@ -24,9 +24,11 @@ export const feeSelector = selector({
   get: async ({ get }) => {
     get(stateUpdatesAtom)
     const client = get(cosmWasmClientSelector)
+
     const config = await client.queryContractSmart(CONTRACT_ADDR, {
       get_config: {},
     })
+
     return config.fee
   },
 })
@@ -39,26 +41,26 @@ export const providedSelector = selectorFamily<string, string>({
       get(stateUpdatesAtom)
       const client = get(cosmWasmClientSelector)
 
-      const provided = client.queryContractSmart(CONTRACT_ADDR, {
+      const provided = await client.queryContractSmart(CONTRACT_ADDR, {
         provided: { address },
       })
       return provided
     },
 })
 
-export const USTValueSelector = selectorFamily({
-  key: 'USTValueSelector',
+export const USDCValueSelector = selectorFamily({
+  key: 'USDCValueSelector',
   get:
     (juno: string) =>
     async ({ get }) => {
       const client = get(cosmWasmClientSelector)
-      if (!client || !USDC_SWAP_ADDR) return '0'
+      if (!USDC_SWAP_ADDR) return '0'
 
       const junoUSD = (
         await client.queryContractSmart(
           // Juno UST pool on Junoswap.
           USDC_SWAP_ADDR,
-          { token1_for_token2_price: { token1_amount: '1000000' } }
+          { token1_for_token2_price: { token1_amount: Math.pow(10, 6).toString() } }
         )
       ).token2_amount
 

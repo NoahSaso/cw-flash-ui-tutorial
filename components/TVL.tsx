@@ -3,7 +3,7 @@ import { FC } from 'react'
 import Image from 'next/image'
 
 import { useRecoilValue } from 'recoil'
-import { nativeTVLSelector, USTValueSelector } from '../selectors/contract'
+import { nativeTVLSelector, USDCValueSelector } from '../selectors/contract'
 import { convertMicroDenomToDenom } from '../util/conversion'
 import { BigCard } from './BigCard'
 import { LoadingMono, Mono } from './Mono'
@@ -13,12 +13,12 @@ export interface TVLProps {}
 
 export const TVL: FC<TVLProps> = ({}) => {
   const nativeTVL = useRecoilValue(nativeTVLSelector)
-  const USTValue = useRecoilValue(USTValueSelector(nativeTVL))
+  const USDCValue = useRecoilValue(USDCValueSelector(nativeTVL))
 
   return (
     <BigCard>
       <div className="flex flex-col gap-2">
-        <Title>$ {Number(USTValue).toLocaleString()} TVL</Title>
+        <Title>$ {Number(USDCValue).toLocaleString()} TVL</Title>
         <div className="flex flex-row items-center gap-2">
           <Image
             layout="fixed"
