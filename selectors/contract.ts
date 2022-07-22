@@ -60,7 +60,11 @@ export const USDCValueSelector = selectorFamily({
         await client.queryContractSmart(
           // Juno UST pool on Junoswap.
           USDC_SWAP_ADDR,
-          { token1_for_token2_price: { token1_amount: Math.pow(10, 6).toString() } }
+          {
+            token1_for_token2_price: {
+              token1_amount: Math.pow(10, 6).toString(),
+            },
+          }
         )
       ).token2_amount
 

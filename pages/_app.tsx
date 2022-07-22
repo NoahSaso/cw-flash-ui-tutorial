@@ -2,11 +2,7 @@ import '../styles/globals.css'
 import type { AppProps } from 'next/app'
 import { RecoilRoot } from 'recoil'
 
-import {
-  ChainInfoID,
-  WalletManagerProvider,
-  WalletType,
-} from '@noahsaso/cosmodal'
+import { WalletManagerProvider, WalletType } from '@noahsaso/cosmodal'
 import { GasPrice } from '@cosmjs/stargate'
 import { CHAIN_ID } from '../util/constants'
 
@@ -17,7 +13,8 @@ function MyApp({ Component, pageProps }: AppProps) {
     <WalletManagerProvider
       walletConnectClientMeta={{
         name: 'cw-flash-ui-tutorial',
-        description: 'An example frontend for CosmWasm flash loans.',
+        description:
+          'A tutorial of an example frontend for CosmWasm flash loans.',
         url: 'https://cw-flash-ui.vercel.app',
         icons: ['https://moonphase.is/image.svg'],
       }}

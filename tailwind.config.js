@@ -1,9 +1,9 @@
 const generateColorClass = (variable) => `rgb(var(--${variable}))`
 
 const colors = {
-    background: generateColorClass("background"),
-    card: generateColorClass("card"),
-    accent: generateColorClass("accent"),
+  background: generateColorClass('background'),
+  card: generateColorClass('card'),
+  accent: generateColorClass('accent'),
 }
 
 module.exports = {
@@ -13,7 +13,7 @@ module.exports = {
   ],
   theme: {
     extend: {
-	colors
+      colors,
     },
   },
   plugins: [],
