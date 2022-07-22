@@ -33,9 +33,9 @@ signingCosmWasmClient.execute(
 ): Promise<ExecuteResult>
 ```
 
-## Setup
+## Setup clients
 
-**Queries**
+**Queries (CosmWasmClient)**
 
 ```ts
 import { CosmWasmClient } from '@cosmjs/cosmwasm-stargate'
@@ -44,7 +44,7 @@ import { CosmWasmClient } from '@cosmjs/cosmwasm-stargate'
 const cosmWasmClient = await CosmWasmClient.connect(CHAIN_RPC_ENDPOINT)
 ```
 
-**Executions**
+**Executions (SigningCosmWasmClient)**
 
 ### Manual
 
@@ -128,7 +128,7 @@ const Component: () => {
 }
 ```
 
-## Example Usage
+## Example Usages
 
 ### Query
 
