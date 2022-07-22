@@ -145,8 +145,42 @@ the specific query message variant we care about is
 and its response is
 [here](https://github.com/Wasmswap/wasmswap-contracts/blob/1e1eaeca4dd9a65d69c4d5f2406bdb7f56754eb9/src/msg.rs#L86-L88).
 
+```rust
+// Query
+#[serde(rename_all = "snake_case")]
+enum QueryMsg {
+  ...
+  Token1ForToken2Price {
+    token1_amount: Uint128,
+  },
+  ...
+}
+// Response
+struct Token1ForToken2PriceResponse {
+  token2_amount: Uint128,
+}
+```
+
+The query code becomes:
+
+```ts
+const response = await cosmWasmClient.queryContractSmart(
+  JUNO_USDC_SWAP_ADDRESS,
+  {
+    token1_for_token2_price: {
+      token1_amount: junoBalance,
+    },
+  }
+)
+const usdcBalance = response.token2_amount
+```
+
 Using these message and response types, and the clients and hooks we saw above,
-we can get the USDC value of the JUNO in the connected wallet.
+we can get the USDC value of the JUNO in the connected wallet. Here is a React
+component that implements the above query and displays the results:
+
+<details>
+<summary>ViewBalance Component</summary>
 
 ```tsx
 import { CosmWasmClient } from '@cosmjs/cosmwasm-stargate'
@@ -188,14 +222,6 @@ const ViewBalance = () => {
         .amount
 
       // Query the Juno-USDC swap smart contract for the USDC value.
-      // Rust query enum:
-      //    QueryMsg::Token1ForToken2Price {
-      //        token1_amount: Uint128
-      //    }
-      // Rust response:
-      //    struct Token1ForToken2PriceResponse {
-      //        token2_amount: Uint128
-      //    }
       const response = await cosmWasmClient.queryContractSmart(
         JUNO_USDC_SWAP_ADDRESS,
         {
@@ -243,14 +269,25 @@ const ViewBalance = () => {
 }
 ```
 
-A **_really important concept to keep in mind_** about this example is currency
-decimals. For native tokens, generally speaking, the denominations we are
-familiar with (e.g. `JUNO`, `ATOM`, `STARS`) are just conveniences for our human
-brains. In reality, they all exist as integers with `u`-prefixed denoms, such as
-`ujuno`, `uatom`, and `ustars`. The number of decimals a token has actually
-corresponds to the conversion between its true micro denomination, represented
-in smart contracts and the blockchain itself, and the larger denomination we
-expect to see. The majority of tokens in the Cosmos use 6 decimals.
+</details>
+<br />
+
+A **_really important concept to keep in mind_** about this example is managing
+the currency decimals. For native tokens, generally speaking, the denominations
+we are familiar with (e.g. `JUNO`, `ATOM`, `STARS`) are just conveniences for
+our human brains. In reality, they all exist as integers with `u`-prefixed
+denoms, such as `ujuno`, `uatom`, and `ustars`. The number of decimals a token
+has actually corresponds to the conversion between its true micro denomination,
+represented in smart contracts and the blockchain itself, and the larger
+denomination we expect to see. The majority of tokens in the Cosmos use 6
+decimals.
+
+Other things worth noting:
+
+- `Uint128` is represented in JSON as a **string**, not a number.
+- The `#[serde(rename_all = "snake_case")]` line above the `QueryMsg` enum means
+  that `Token1ForToken2Price` becomes snake_case'd into
+  `token1_for_token2_price` for the JSON-serialized msg that we construct.
 
 ### Execute
 
@@ -262,8 +299,51 @@ The swap smart contract code can be found
 and the specific execute message variant we care about is
 [here](https://github.com/Wasmswap/wasmswap-contracts/blob/1e1eaeca4dd9a65d69c4d5f2406bdb7f56754eb9/src/msg.rs#L36-L41).
 
+```rust
+enum TokenSelect {
+  Token1,
+  Token2,
+}
+
+// Execute
+#[serde(rename_all = "snake_case")]
+enum ExecuteMsg {
+  ...
+  Swap {
+      input_token: TokenSelect,
+      input_amount: Uint128,
+      min_output: Uint128,
+      expiration: Option<Expiration>,
+  },
+  ...
+}
+```
+
+The execute code becomes:
+
+```ts
+const response = await signingCosmWasmClient.execute(
+  walletAddress,
+  JUNO_USDC_SWAP_ADDRESS,
+  {
+    swap: {
+      input_token: 'Token1',
+      input_amount: ujunoInput,
+      min_output: minUsdcOutput,
+    },
+  },
+  'auto',
+  undefined,
+  [coin(ujunoInput, 'ujuno')]
+)
+```
+
 Using these message and response types, and the queries from the last example,
-we can add just one `execute` call to make the swap.
+we can add just one `execute` call to make the swap. Here is a React
+component that implements the above execution to let you make a swap:
+
+<details>
+<summary>Swap Component</summary>
 
 ```tsx
 import { CosmWasmClient } from '@cosmjs/cosmwasm-stargate'
@@ -375,13 +455,6 @@ const Swap = () => {
       // Execute the swap message on the Juno-USDC swap smart contract.
       // TokenSelect is "Token1" or "Token2".
       // Option types can be omitted or set to null.
-      // Rust execute enum:
-      //    ExecuteMsg::Swap {
-      //        input_token: TokenSelect
-      //        input_amount: Uint128
-      //        min_output: Uint128
-      //        expiration: Option<Expiration>
-      //    }
       const response = await signingCosmWasmClient.execute(
         address,
         JUNO_USDC_SWAP_ADDRESS,
@@ -453,3 +526,21 @@ const Swap = () => {
   )
 }
 ```
+
+</details>
+<br />
+
+Some things worth noting:
+
+- `@cosmjs/stargate` has a `coin` helper method to facilitate sending funds in
+  the proper format. Just give it the amount and denom.
+- We could omit `expiration` from the message since it is an `Option` Rust type.
+  This is equivalent to setting `expiration: null` in the message.
+- It is **_very important_** to keep track of currency denominations being used.
+  Contracts can only accept micro denominations: `ujuno`, `uatom`, etc. because
+  those are the only currencies that actually exist in the blockchain. Pay very
+  close attention to decimals, _always_.
+- `Uint128` is represented in JSON as a **string**, not a number.
+- The `#[serde(rename_all = "snake_case")]` line above the `ExecuteMsg` enum
+  means that `Swap` becomes snake_case'd into `swap` for the JSON-serialized msg
+  that we construct.
