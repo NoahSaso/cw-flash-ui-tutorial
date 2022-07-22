@@ -631,7 +631,7 @@ const config = await client.queryContractSmart(CONTRACT_ADDR, {
 ### (2) `selectors/contract.ts` line 47
 
 Now we want to inform the user how much their wallet has already provided to the
-flash loan smart contract. Assume you already know the wallet address (`walletAddress`) since we set it
+flash loan smart contract. Assume we know the wallet address (`walletAddress`) since we set it
 up earlier.
 
 ```ts
