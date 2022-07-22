@@ -3,7 +3,7 @@
 **There are really just TWO CosmJS functions that you will use to talk to smart
 contracts when building a front end.** (aside from the initial `connect` call).
 
-https://github.com/cosmos/cosmjs/blob/3222172e6a/packages/cosmwasm-stargate/src/cosmwasmclient.ts#L441
+### queryContractSmart
 
 ```ts
 cosmWasmClient.queryContractSmart(
@@ -12,7 +12,11 @@ cosmWasmClient.queryContractSmart(
 ): Promise<JsonObject>
 ```
 
-https://github.com/cosmos/cosmjs/blob/3222172e6a/packages/cosmwasm-stargate/src/signingcosmwasmclient.ts#L397
+[docs](https://cosmos.github.io/cosmjs/latest/cosmwasm-stargate/classes/CosmWasmClient.html#queryContractSmart)
+<br />
+[source](https://github.com/cosmos/cosmjs/blob/3222172e6a/packages/cosmwasm-stargate/src/cosmwasmclient.ts#L441)
+
+### execute
 
 ```ts
 signingCosmWasmClient.execute(
@@ -24,6 +28,10 @@ signingCosmWasmClient.execute(
   funds?: readonly Coin[],
 ): Promise<ExecuteResult>
 ```
+
+[docs](https://cosmos.github.io/cosmjs/latest/cosmwasm-stargate/classes/SigningCosmWasmClient.html#execute)
+<br />
+[source](https://github.com/cosmos/cosmjs/blob/3222172e6a/packages/cosmwasm-stargate/src/signingcosmwasmclient.ts#L397)
 
 ## Setup
 
