@@ -35,7 +35,7 @@ signingCosmWasmClient.execute(
 
 ## Setup clients
 
-**Queries (CosmWasmClient)**
+### Queries (CosmWasmClient)
 
 ```ts
 import { CosmWasmClient } from '@cosmjs/cosmwasm-stargate'
@@ -44,9 +44,9 @@ import { CosmWasmClient } from '@cosmjs/cosmwasm-stargate'
 const cosmWasmClient = await CosmWasmClient.connect(CHAIN_RPC_ENDPOINT)
 ```
 
-**Executions (SigningCosmWasmClient)**
+### Executions (SigningCosmWasmClient)
 
-### Manual
+#### **Manual**
 
 ```ts
 import { SigningCosmWasmClient } from '@cosmjs/cosmwasm-stargate'
@@ -69,7 +69,7 @@ const signingCosmWasmClient = await SigningCosmWasmClient.connect(
 )
 ```
 
-### Automatic
+#### **Automatic**
 
 Managing wallet connection, supporting mobile WalletConnect, and setting up
 signing clients are patterns that repeat themselves in all Cosmos apps, so
