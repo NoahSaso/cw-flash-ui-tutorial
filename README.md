@@ -569,6 +569,9 @@ Some things worth noting:
 
 ## Exercises
 
+For all exercises, assume `CONTRACT_ADDR` is a globally-defined constant that
+refers to the flash loan smart contract's address.
+
 ### (1) `selectors/contract.ts` line 28
 
 We want to get the fee from the flash loan smart contract config to inform the
@@ -611,7 +614,7 @@ pub struct ConfigResponse {
 }
 ```
 
-_Now write the query in JS!_
+_Write the query in JS!_
 
 <details>
 <summary>Solution</summary>
@@ -628,7 +631,7 @@ const config = await client.queryContractSmart(CONTRACT_ADDR, {
 ### (2) `selectors/contract.ts` line 47
 
 Now we want to inform the user how much their wallet has already provided to the
-flash loan smart contract. Assume you already know the wallet address since we set it
+flash loan smart contract. Assume you already know the wallet address (`walletAddress`) since we set it
 up earlier.
 
 ```ts
@@ -695,8 +698,10 @@ _Write the query in JS!_
 <summary>Solution</summary>
 
 ```ts
+const walletAddress = 'junoWallet'
+
 const provided = await client.queryContractSmart(CONTRACT_ADDR, {
-  provided: { address },
+  provided: { address: walletAddress },
 })
 ```
 
@@ -705,10 +710,12 @@ const provided = await client.queryContractSmart(CONTRACT_ADDR, {
 
 ### (3) `pages/index.tsx` line 90
 
-Let's execute a loan! Assume we know the receiving smart contract's address
-(`receiverAddress`) and the amount in JUNO (`junoAmount`) we want to borrow.
+Let's execute a loan! Assume we know the wallet address (`walletAddress`),
+receiving smart contract's address (`receiverAddress`), and the amount in JUNO
+(`junoAmount`) we want to borrow.
 
 ```ts
+const walletAddress = 'junoWallet'
 const receiverAddess = 'junoReceivingSmartContract'
 const junoAmount = 100
 
@@ -755,9 +762,11 @@ const execution = client.execute(
 ### (4) `pages/provide.tsx` line 114
 
 Let's provide the flash loan smart contract with some JUNO so it can make loans.
-Assume we want to provide 1000 JUNO (`junoAmount`).
+Assume we know the wallet address (`walletAddress`) and want to provide 1000
+JUNO (`junoAmount`).
 
 ```ts
+const walletAddress = 'junoWallet'
 const junoAmount = 1000
 
 // TODO: Execute CONTRACT_ADDR's ExecuteMsg::Provide action
@@ -806,9 +815,12 @@ const execution = client.execute(
 
 Now the market is down and we need to pay rent because we live in late-stage
 capitalism and life is hard. Let's withdraw our provided JUNO from the flash
-loan smart contract so we can survive.
+loan smart contract so we can survive. Assume we know the wallet address
+(`walletAddress`).
 
 ```ts
+const walletAddress = 'junoWallet'
+
 // TODO: Execute CONTRACT_ADDR's ExecuteMsg::Withdraw action
 ```
 
