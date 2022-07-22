@@ -25,7 +25,7 @@ export const feeSelector = selector({
     get(stateUpdatesAtom)
     const client = get(cosmWasmClientSelector)
 
-    // TODO: Get CONTRACT_ADDR's QueryMsg::GetConfig response
+    // TODO: Get the fee from CONTRACT_ADDR's QueryMsg::GetConfig response
     // QueryMsg variant:
     // https://github.com/ezekiiel/cw-flash-loan/blob/3b77e6bc2c1c02f359c3430329c77917e3b9b3fc/contracts/cw-flash-loan/src/msg.rs#L35
     // Response:

@@ -210,9 +210,9 @@ const JUNO_USDC_SWAP_ADDRESS =
 
 const ViewBalance = () => {
   const { connect, connected, disconnect } = useWalletManager()
-  // Retrieve wallet address from cosmodal. We don't need the signing client since
-  // we're just querying a contract, and don't need to sign any transactions just
-  // to ask for data.
+  // Retrieve wallet name and address from cosmodal. We don't need the signing
+  // client since we're just querying a contract, and don't need to sign any
+  // transactions just to ask for data.
   const { name, address } = useWallet()
 
   const [cosmWasmClient, setCosmWasmClient] = useState<
@@ -374,9 +374,8 @@ const JUNO_USDC_SWAP_ADDRESS =
 
 const Swap = () => {
   const { connect, connected, disconnect } = useWalletManager()
-  // Retrieve wallet address from cosmodal. We don't need the signing client since
-  // we're just querying a contract, and don't need to sign any transactions just
-  // to ask for data.
+  // Retrieve wallet name, address, and signing client, since we need to perform
+  // an execution and need to sign a transaction.
   const { name, address, signingCosmWasmClient } = useWallet()
 
   const [cosmWasmClient, setCosmWasmClient] = useState<
@@ -579,18 +578,7 @@ user what fee must be applied to their loan. If they borrow 100 tokens, and the
 fee is 0.01 (1%), they must return 101 tokens for the borrow to succeed.
 
 ```ts
-export const feeSelector = selector({
-  key: 'feeSelector',
-  get: async ({ get }) => {
-    get(stateUpdatesAtom)
-    const client = get(cosmWasmClientSelector)
-
-    // TODO: Get CONTRACT_ADDR's QueryMsg::GetConfig response
-    const config = ...
-
-    return config.fee
-  },
-})
+// TODO: Get the fee from CONTRACT_ADDR's QueryMsg::GetConfig response
 ```
 
 [Query msg](https://github.com/ezekiiel/cw-flash-loan/blob/3b77e6bc2c1c02f359c3430329c77917e3b9b3fc/contracts/cw-flash-loan/src/msg.rs#L35):
@@ -623,6 +611,7 @@ _Write the query in JS!_
 const config = await client.queryContractSmart(CONTRACT_ADDR, {
   get_config: {},
 })
+const fee = config.fee
 ```
 
 </details>
@@ -631,24 +620,11 @@ const config = await client.queryContractSmart(CONTRACT_ADDR, {
 ### (2) `selectors/contract.ts` line 47
 
 Now we want to inform the user how much their wallet has already provided to the
-flash loan smart contract. Assume we know the wallet address (`walletAddress`) since we set it
-up earlier.
+flash loan smart contract. Assume we know the wallet address (`walletAddress`)
+since we set it up earlier.
 
 ```ts
-export const providedSelector = selectorFamily<string, string>({
-  key: 'walletProvidedSelector',
-  get:
-    (walletAddress) =>
-    async ({ get }) => {
-      get(stateUpdatesAtom)
-      const client = get(cosmWasmClientSelector)
-
-      // TODO: Get CONTRACT_ADDR's QueryMsg::Provided response
-      // const provided = ...
-
-      return provided
-    },
-})
+// TODO: Get CONTRACT_ADDR's QueryMsg::Provided response
 ```
 
 [Query msg](https://github.com/ezekiiel/cw-flash-loan/blob/3b77e6bc2c1c02f359c3430329c77917e3b9b3fc/contracts/cw-flash-loan/src/msg.rs#L36):
@@ -841,8 +817,6 @@ _Write the query in JS!_
 <summary>Solution</summary>
 
 ```ts
-import { coins } from '@cosmjs/stargate'
-
 const walletAddress = 'junoWallet'
 
 const execution = client.execute(
