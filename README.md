@@ -6,19 +6,22 @@ contracts when building a front end.** (aside from the initial `connect` call).
 https://github.com/cosmos/cosmjs/blob/3222172e6a/packages/cosmwasm-stargate/src/cosmwasmclient.ts#L441
 
 ```ts
-cosmWasmClient.queryContractSmart(address: string, queryMsg: Record<string, unknown>): Promise<JsonObject>
+cosmWasmClient.queryContractSmart(
+  address: string,
+  queryMsg: Record<string, unknown>,
+): Promise<JsonObject>
 ```
 
 https://github.com/cosmos/cosmjs/blob/3222172e6a/packages/cosmwasm-stargate/src/signingcosmwasmclient.ts#L397
 
 ```ts
 signingCosmWasmClient.execute(
-   senderAddress: string,
-   contractAddress: string,
-   msg: Record<string, unknown>,
-   fee: StdFee | "auto" | number,
-   memo = "",
-   funds?: readonly Coin[],
+  senderAddress: string,
+  contractAddress: string,
+  msg: Record<string, unknown>,
+  fee: StdFee | "auto" | number,
+  memo = "",
+  funds?: readonly Coin[],
 ): Promise<ExecuteResult>
 ```
 
