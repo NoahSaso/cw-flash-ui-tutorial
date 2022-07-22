@@ -90,15 +90,9 @@ const Home: NextPage = () => {
     // TODO: Execute CONTRACT_ADDR's ExecuteMsg::Loan action
     // ExecuteMsg variant:
     // https://github.com/ezekiiel/cw-flash-loan/blob/3b77e6bc2c1c02f359c3430329c77917e3b9b3fc/contracts/cw-flash-loan/src/msg.rs#L25
-    client
-      .execute(
-        walletAddress,
-        CONTRACT_ADDR,
-        {
-          loan: { receiver, amount: convertDenomToMicroDenom(amount) },
-        },
-        'auto'
-      )
+    // const execution = ...
+
+    execution
       .catch((e) => toast.error(e.message))
       .then((r) => {
         if (typeof r !== 'string') {

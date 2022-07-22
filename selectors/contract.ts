@@ -30,9 +30,7 @@ export const feeSelector = selector({
     // https://github.com/ezekiiel/cw-flash-loan/blob/3b77e6bc2c1c02f359c3430329c77917e3b9b3fc/contracts/cw-flash-loan/src/msg.rs#L35
     // Response:
     // https://github.com/ezekiiel/cw-flash-loan/blob/3b77e6bc2c1c02f359c3430329c77917e3b9b3fc/contracts/cw-flash-loan/src/msg.rs#L43-L48
-    const config = await client.queryContractSmart(CONTRACT_ADDR, {
-      get_config: {},
-    })
+    // const config = ...
 
     return config.fee
   },
@@ -41,7 +39,7 @@ export const feeSelector = selector({
 export const providedSelector = selectorFamily<string, string>({
   key: 'walletProvidedSelector',
   get:
-    (address) =>
+    (walletAddress) =>
     async ({ get }) => {
       get(stateUpdatesAtom)
       const client = get(cosmWasmClientSelector)
@@ -51,9 +49,7 @@ export const providedSelector = selectorFamily<string, string>({
       // https://github.com/ezekiiel/cw-flash-loan/blob/3b77e6bc2c1c02f359c3430329c77917e3b9b3fc/contracts/cw-flash-loan/src/msg.rs#L36
       // Function definition, no custom struct response:
       // https://github.com/ezekiiel/cw-flash-loan/blob/3b77e6bc2c1c02f359c3430329c77917e3b9b3fc/contracts/cw-flash-loan/src/contract.rs#L362
-      const provided = await client.queryContractSmart(CONTRACT_ADDR, {
-        provided: { address },
-      })
+      // const provided = ...
 
       return provided
     },

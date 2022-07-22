@@ -121,6 +121,8 @@ const Component: () => {
     signingCosmWasmClient.execute(
       address,
       "junoSomeContractAddress",
+      { msg },
+      'auto',
       ...
     )
   }
@@ -565,4 +567,281 @@ Some things worth noting:
   means that `Swap` becomes snake_case'd into `swap` for the JSON-serialized msg
   that we construct.
 
-##
+## Exercises
+
+### (1) `selectors/contract.ts` line 28
+
+We want to get the fee from the flash loan smart contract config to inform the
+user what fee must be applied to their loan. If they borrow 100 tokens, and the
+fee is 0.01 (1%), they must return 101 tokens for the borrow to succeed.
+
+```ts
+export const feeSelector = selector({
+  key: 'feeSelector',
+  get: async ({ get }) => {
+    get(stateUpdatesAtom)
+    const client = get(cosmWasmClientSelector)
+
+    // TODO: Get CONTRACT_ADDR's QueryMsg::GetConfig response
+    const config = ...
+
+    return config.fee
+  },
+})
+```
+
+[Query msg](https://github.com/ezekiiel/cw-flash-loan/blob/3b77e6bc2c1c02f359c3430329c77917e3b9b3fc/contracts/cw-flash-loan/src/msg.rs#L35):
+
+```rust
+#[serde(rename_all = "snake_case")]
+enum QueryMsg {
+  ...
+  GetConfig {},
+  ...
+}
+```
+
+[Query response](https://github.com/ezekiiel/cw-flash-loan/blob/3b77e6bc2c1c02f359c3430329c77917e3b9b3fc/contracts/cw-flash-loan/src/msg.rs#L44-L48):
+
+```rust
+pub struct ConfigResponse {
+  pub admin: Option<String>,
+  pub fee: Decimal,
+  pub loan_denom: CheckedLoanDenom,
+}
+```
+
+_Now write the query in JS!_
+
+<details>
+<summary>Solution</summary>
+
+```ts
+const config = await client.queryContractSmart(CONTRACT_ADDR, {
+  get_config: {},
+})
+```
+
+</details>
+<br />
+
+### (2) `selectors/contract.ts` line 47
+
+Now we want to inform the user how much their wallet has already provided to the
+flash loan contract. Assume you already know the wallet address since we set it
+up earlier.
+
+```ts
+export const providedSelector = selectorFamily<string, string>({
+  key: 'walletProvidedSelector',
+  get:
+    (walletAddress) =>
+    async ({ get }) => {
+      get(stateUpdatesAtom)
+      const client = get(cosmWasmClientSelector)
+
+      // TODO: Get CONTRACT_ADDR's QueryMsg::Provided response
+      // const provided = ...
+
+      return provided
+    },
+})
+```
+
+[Query msg](https://github.com/ezekiiel/cw-flash-loan/blob/3b77e6bc2c1c02f359c3430329c77917e3b9b3fc/contracts/cw-flash-loan/src/msg.rs#L36):
+
+```rust
+#[serde(rename_all = "snake_case")]
+enum QueryMsg {
+  ...
+  Provided { address: String },
+  ...
+}
+```
+
+This query doesn't have a custom struct response, so we must check the
+`contract.rs` code, find the function, and see what it returns.
+
+[Query function](https://github.com/ezekiiel/cw-flash-loan/blob/3b77e6bc2c1c02f359c3430329c77917e3b9b3fc/contracts/cw-flash-loan/src/contract.rs#L362):
+
+```rust
+pub fn query_provided(deps: Deps, address: String) -> StdResult<Binary> {
+  let address = deps.api.addr_validate(&address)?;
+  let provided = PROVISIONS
+    .may_load(deps.storage, address)
+    .unwrap_or_default();
+
+  match provided {
+    Some(provided) => to_binary(&provided),
+    None => to_binary(&Uint128::zero()),
+  }
+}
+```
+
+It seems like we need to know what `PROVISIONS` is. `PROVISIONS` is a piece of
+state, [found in
+`state.rs`](https://github.com/ezekiiel/cw-flash-loan/blob/3b77e6bc2c1c02f359c3430329c77917e3b9b3fc/contracts/cw-flash-loan/src/state.rs#L18),
+that maps addresses to `Uint128`s.
+
+```rust
+pub const PROVISIONS: Map<Addr, Uint128> = Map::new("provision");
+```
+
+Now we know that the query function returns a `Uint128` directly!
+
+_Write the query in JS!_
+
+<details>
+<summary>Solution</summary>
+
+```ts
+const provided = await client.queryContractSmart(CONTRACT_ADDR, {
+  provided: { address },
+})
+```
+
+</details>
+<br />
+
+### (3) `pages/index.tsx` line 90
+
+Let's execute a loan! Assume we know the receiving smart contract's address
+(`receiverAddress`) and the amount in JUNO (`junoAmount`) we want to borrow.
+
+```ts
+const receiverAddess = 'junoReceivingSmartContract'
+const junoAmount = 100
+
+// TODO: Execute CONTRACT_ADDR's ExecuteMsg::Loan action
+```
+
+[Execute msg](https://github.com/ezekiiel/cw-flash-loan/blob/3b77e6bc2c1c02f359c3430329c77917e3b9b3fc/contracts/cw-flash-loan/src/msg.rs#L25):
+
+```rust
+#[serde(rename_all = "snake_case")]
+enum ExecuteMsg {
+  ...
+  Loan { receiver: String, amount: Uint128 },
+  ...
+}
+```
+
+_Write the query in JS!_
+
+<details>
+<summary>Solution</summary>
+
+```ts
+const walletAddress = 'junoWallet'
+const receiverAddess = 'junoReceivingSmartContract'
+const junoAmount = 100
+
+const execution = client.execute(
+  walletAddress,
+  CONTRACT_ADDR,
+  {
+    loan: {
+      receiver: receiverAddess,
+      amount: Math.floor(junoAmount * Math.pow(10, 6)).toString(),
+    },
+  },
+  'auto'
+)
+```
+
+</details>
+<br />
+
+### (4) `pages/provide.tsx` line 114
+
+Let's provide the flash loan smart contract with some JUNO so it can make loans.
+Assume we want to provide 1000 JUNO (`junoAmount`).
+
+```ts
+const junoAmount = 1000
+
+// TODO: Execute CONTRACT_ADDR's ExecuteMsg::Provide action
+```
+
+[Execute msg](https://github.com/ezekiiel/cw-flash-loan/blob/3b77e6bc2c1c02f359c3430329c77917e3b9b3fc/contracts/cw-flash-loan/src/msg.rs#L27):
+
+```rust
+#[serde(rename_all = "snake_case")]
+enum ExecuteMsg {
+  ...
+  Provide {},
+  ...
+}
+```
+
+_Write the query in JS!_
+
+(Try using the `coins` function we saw before.)
+
+<details>
+<summary>Solution</summary>
+
+```ts
+import { coins } from '@cosmjs/stargate'
+
+const walletAddress = 'junoWallet'
+const junoAmount = 100
+
+const execution = client.execute(
+  walletAddress,
+  CONTRACT_ADDR,
+  {
+    provide: {},
+  },
+  'auto',
+  undefined,
+  coins(Math.floor(junoAmount * Math.pow(10, 6)).toString(), 'ujuno')
+)
+```
+
+</details>
+<br />
+
+### (5) `pages/provide.tsx` line 147
+
+Now the market is down and we need to pay rent because we live in late-stage
+capitalism and life is hard. Let's withdraw our provided JUNO from the flash
+loan smart contract so we can survive.
+
+```ts
+// TODO: Execute CONTRACT_ADDR's ExecuteMsg::Withdraw action
+```
+
+[Execute msg](https://github.com/ezekiiel/cw-flash-loan/blob/3b77e6bc2c1c02f359c3430329c77917e3b9b3fc/contracts/cw-flash-loan/src/msg.rs#L28):
+
+```rust
+#[serde(rename_all = "snake_case")]
+enum ExecuteMsg {
+  ...
+  Withdraw {},
+  ...
+}
+```
+
+_Write the query in JS!_
+
+<details>
+<summary>Solution</summary>
+
+```ts
+import { coins } from '@cosmjs/stargate'
+
+const walletAddress = 'junoWallet'
+
+const execution = client.execute(
+  walletAddress,
+  CONTRACT_ADDR,
+  {
+    withdraw: {},
+  },
+  'auto'
+)
+```
+
+</details>
+<br />
