@@ -9,6 +9,8 @@ cd cw-flash-ui-tutorial
 # Install packages
 yarn
 
+# Follow tutorial below and fill in missing queries and executions.
+
 # Run development server
 yarn dev
 ```
