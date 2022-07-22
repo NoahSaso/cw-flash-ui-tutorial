@@ -1,5 +1,20 @@
 # CosmWasm Flash Loan UI Tutorial
 
+## Installation
+
+```bash
+git clone https://github.com/NoahSaso/cw-flash-ui-tutorial.git
+cd cw-flash-ui-tutorial
+
+# Install
+yarn
+
+# Run development server
+yarn dev
+```
+
+# Tutorial
+
 **There are really just TWO CosmJS functions that you will use to talk to smart
 contracts when building a front end.** (aside from the initial `connect` call).
 
@@ -549,3 +564,5 @@ Some things worth noting:
 - The `#[serde(rename_all = "snake_case")]` line above the `ExecuteMsg` enum
   means that `Swap` becomes snake_case'd into `swap` for the JSON-serialized msg
   that we construct.
+
+##
