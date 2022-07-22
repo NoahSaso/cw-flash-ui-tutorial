@@ -3,22 +3,22 @@ import { FC } from 'react'
 import Image from 'next/image'
 
 import { useRecoilValue } from 'recoil'
-import { nativeTVLSelector, USDCValueSelector } from '../selectors/contract'
+import { nativeTVLSelector } from '../selectors/contract'
 import { convertMicroDenomToDenom } from '../util/conversion'
 import { BigCard } from './BigCard'
 import { LoadingMono, Mono } from './Mono'
 import { LoadingTitle, Title } from './Title'
+import { FEE_DENOM } from '../util/constants'
 
 export interface TVLProps {}
 
 export const TVL: FC<TVLProps> = ({}) => {
   const nativeTVL = useRecoilValue(nativeTVLSelector)
-  const USDCValue = useRecoilValue(USDCValueSelector(nativeTVL))
 
   return (
     <BigCard>
       <div className="flex flex-col gap-2">
-        <Title>$ {Number(USDCValue).toLocaleString()} TVL</Title>
+        <Title>TVL</Title>
         <div className="flex flex-row items-center gap-2">
           <Image
             layout="fixed"
@@ -28,7 +28,10 @@ export const TVL: FC<TVLProps> = ({}) => {
             height={16}
           />
           <Mono>
-            {convertMicroDenomToDenom(nativeTVL).toLocaleString()} Juno provided
+            {convertMicroDenomToDenom(nativeTVL).toLocaleString(undefined, {
+              maximumFractionDigits: 6,
+            })}{' '}
+            ${FEE_DENOM.slice(1).toUpperCase()} provided
           </Mono>
         </div>
       </div>

@@ -111,6 +111,9 @@ const Provide: NextPage = () => {
 
     setLoading(true)
 
+    // TODO: Execute CONTRACT_ADDR's ExecuteMsg::Provide action
+    // ExecuteMsg variant:
+    // https://github.com/ezekiiel/cw-flash-loan/blob/3b77e6bc2c1c02f359c3430329c77917e3b9b3fc/contracts/cw-flash-loan/src/msg.rs#L27
     client
       .execute(
         walletAddress,
@@ -154,6 +157,9 @@ const Provide: NextPage = () => {
 
     setLoading(true)
 
+    // TODO: Execute CONTRACT_ADDR's ExecuteMsg::Withdraw action
+    // ExecuteMsg variant:
+    // https://github.com/ezekiiel/cw-flash-loan/blob/3b77e6bc2c1c02f359c3430329c77917e3b9b3fc/contracts/cw-flash-loan/src/msg.rs#L28
     client
       .execute(
         walletAddress,

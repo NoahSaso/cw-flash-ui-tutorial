@@ -2,7 +2,7 @@ import { selector, atom, selectorFamily } from 'recoil'
 
 import { cosmWasmClientSelector } from './chain'
 
-import { CONTRACT_ADDR, FEE_DENOM, USDC_SWAP_ADDR } from '../util/constants'
+import { CONTRACT_ADDR, FEE_DENOM } from '../util/constants'
 
 export const stateUpdatesAtom = atom({
   key: 'stateUpdatesAtom',
@@ -25,6 +25,11 @@ export const feeSelector = selector({
     get(stateUpdatesAtom)
     const client = get(cosmWasmClientSelector)
 
+    // TODO: Get CONTRACT_ADDR's QueryMsg::GetConfig response
+    // QueryMsg variant:
+    // https://github.com/ezekiiel/cw-flash-loan/blob/3b77e6bc2c1c02f359c3430329c77917e3b9b3fc/contracts/cw-flash-loan/src/msg.rs#L35
+    // Response:
+    // https://github.com/ezekiiel/cw-flash-loan/blob/3b77e6bc2c1c02f359c3430329c77917e3b9b3fc/contracts/cw-flash-loan/src/msg.rs#L43-L48
     const config = await client.queryContractSmart(CONTRACT_ADDR, {
       get_config: {},
     })
@@ -41,33 +46,15 @@ export const providedSelector = selectorFamily<string, string>({
       get(stateUpdatesAtom)
       const client = get(cosmWasmClientSelector)
 
+      // TODO: Get CONTRACT_ADDR's QueryMsg::Provided response
+      // QueryMsg variant:
+      // https://github.com/ezekiiel/cw-flash-loan/blob/3b77e6bc2c1c02f359c3430329c77917e3b9b3fc/contracts/cw-flash-loan/src/msg.rs#L36
+      // Function definition, no custom struct response:
+      // https://github.com/ezekiiel/cw-flash-loan/blob/3b77e6bc2c1c02f359c3430329c77917e3b9b3fc/contracts/cw-flash-loan/src/contract.rs#L362
       const provided = await client.queryContractSmart(CONTRACT_ADDR, {
         provided: { address },
       })
+
       return provided
-    },
-})
-
-export const USDCValueSelector = selectorFamily({
-  key: 'USDCValueSelector',
-  get:
-    (juno: string) =>
-    async ({ get }) => {
-      const client = get(cosmWasmClientSelector)
-      if (!USDC_SWAP_ADDR) return '0'
-
-      const junoUSD = (
-        await client.queryContractSmart(
-          // Juno UST pool on Junoswap.
-          USDC_SWAP_ADDR,
-          {
-            token1_for_token2_price: {
-              token1_amount: Math.pow(10, 6).toString(),
-            },
-          }
-        )
-      ).token2_amount
-
-      return (Number(junoUSD) * Math.pow(10, -12) * Number(juno)).toString()
     },
 })
