@@ -6,7 +6,7 @@
 git clone https://github.com/NoahSaso/cw-flash-ui-tutorial.git
 cd cw-flash-ui-tutorial
 
-# Install
+# Install packages
 yarn
 
 # Run development server
