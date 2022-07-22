@@ -334,7 +334,7 @@ const response = await signingCosmWasmClient.execute(
   },
   'auto',
   undefined,
-  [coin(ujunoInput, 'ujuno')]
+  coins(ujunoInput, 'ujuno')
 )
 ```
 
@@ -347,7 +347,7 @@ component that implements the above execution to let you make a swap:
 
 ```tsx
 import { CosmWasmClient } from '@cosmjs/cosmwasm-stargate'
-import { coin } from '@cosmjs/stargate'
+import { coins } from '@cosmjs/stargate'
 import { useWallet, useWalletManager } from '@noahsaso/cosmodal'
 import { useCallback, useEffect, useState } from 'react'
 
@@ -467,7 +467,7 @@ const Swap = () => {
         },
         'auto',
         undefined,
-        [coin(ujunoBalanceToSwap, 'ujuno')]
+        coins(ujunoBalanceToSwap, 'ujuno')
       )
 
       // Log response to console so we can inspect its data.
@@ -532,8 +532,13 @@ const Swap = () => {
 
 Some things worth noting:
 
-- `@cosmjs/stargate` has a `coin` helper method to facilitate sending funds in
-  the proper format. Just give it the amount and denom.
+- `@cosmjs/stargate` has
+  [`coin`](https://cosmos.github.io/cosmjs/latest/stargate/modules.html#coin)
+  and
+  [`coins`](https://cosmos.github.io/cosmjs/latest/stargate/modules.html#coins)
+  ([source](https://github.com/cosmos/cosmjs/blob/d59dcbc095e797b4bda21057603262dc8c63875c/packages/amino/src/coins.ts#L16-L43))
+  helper methods to facilitate sending funds in the proper format and keep your
+  code readable.
 - We could omit `expiration` from the message since it is an `Option` Rust type.
   This is equivalent to setting `expiration: null` in the message.
 - It is **_very important_** to keep track of currency denominations being used.
