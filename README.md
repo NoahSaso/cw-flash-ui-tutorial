@@ -628,7 +628,7 @@ const config = await client.queryContractSmart(CONTRACT_ADDR, {
 ### (2) `selectors/contract.ts` line 47
 
 Now we want to inform the user how much their wallet has already provided to the
-flash loan contract. Assume you already know the wallet address since we set it
+flash loan smart contract. Assume you already know the wallet address since we set it
 up earlier.
 
 ```ts
@@ -785,7 +785,7 @@ _Write the query in JS!_
 import { coins } from '@cosmjs/stargate'
 
 const walletAddress = 'junoWallet'
-const junoAmount = 100
+const junoAmount = 1000
 
 const execution = client.execute(
   walletAddress,
@@ -845,3 +845,9 @@ const execution = client.execute(
 
 </details>
 <br />
+
+### **CONGRATULATIONS**
+
+You just wrote a frontend that knows how to talk to smart contracts running on
+the blockchain and access value stored in a wallet. Now go off and make the
+world a better place :) Please....
