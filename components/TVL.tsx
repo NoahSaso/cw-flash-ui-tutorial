@@ -8,7 +8,7 @@ import { convertMicroDenomToDenom } from '../util/conversion'
 import { BigCard } from './BigCard'
 import { LoadingMono, Mono } from './Mono'
 import { LoadingTitle, Title } from './Title'
-import { FEE_DENOM } from '../util/constants'
+import { DENOM_NAME, FEE_DENOM } from '../util/constants'
 
 export interface TVLProps {}
 
@@ -51,7 +51,7 @@ export const TVLLoading: FC<TVLProps> = ({}) => (
           width={16}
           height={16}
         />
-        <LoadingMono>?? Juno provided</LoadingMono>
+        <LoadingMono>?? {DENOM_NAME} provided</LoadingMono>
       </div>
     </div>
   </BigCard>

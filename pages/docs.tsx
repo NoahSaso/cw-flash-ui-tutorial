@@ -9,7 +9,7 @@ import { Mono } from '../components/Mono'
 import { ActionCard } from '../components/ActionButton'
 import { Address } from '../components/Address'
 import { GitHub } from '../components/GitHub'
-import { CONTRACT_ADDR } from '../util/constants'
+import { CONTRACT_ADDR, DENOM_NAME } from '../util/constants'
 import { Fee, FeeLoading } from '../components/Fee'
 import { Loader } from '../components/Loader'
 
@@ -24,7 +24,7 @@ const Docs: NextPage = () => (
           {'{}'}` execute message variant.
         </Mono>
         <Mono>
-          From the UI, select the amount of Juno you would like to receive and
+          From the UI, select the amount of {DENOM_NAME} you would like to receive and
           input the address of your contract.
         </Mono>
         <Mono>
@@ -32,7 +32,7 @@ const Docs: NextPage = () => (
           <Loader fallback={<FeeLoading />}>
             <Fee add={100} />
           </Loader>
-          % of the Juno lent.
+          % of the {DENOM_NAME} lent.
         </Mono>
       </BigCard>
       <div className="flex flex-col gap-5">
@@ -44,7 +44,7 @@ const Docs: NextPage = () => (
               <Fee />
             </Loader>
             % loan fee is distributed among providers prportional to the amount
-            of Juno they have provied.
+            of {DENOM_NAME} they have provied.
           </Mono>
         </BigCard>
         <ActionCard>

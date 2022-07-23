@@ -7,7 +7,7 @@ import { toast } from 'react-hot-toast'
 
 import { useRecoilValueLoadable, useSetRecoilState } from 'recoil'
 
-import { SigningCosmWasmClient } from '@cosmjs/cosmwasm-stargate'
+import { ExecuteResult, SigningCosmWasmClient } from '@cosmjs/cosmwasm-stargate'
 
 import { Background } from '../components/Background'
 import { BigCard } from '../components/BigCard'
@@ -26,7 +26,7 @@ import {
   convertMicroDenomToDenom,
 } from '../util/conversion'
 import { isValidContractAddress } from '../util/validation'
-import { CONTRACT_ADDR } from '../util/constants'
+import { CONTRACT_ADDR, DENOM_NAME } from '../util/constants'
 import { TXHash } from '../components/TXHash'
 import { useWalletManager, WalletConnectionStatus } from '@noahsaso/cosmodal'
 
@@ -90,6 +90,9 @@ const Home: NextPage = () => {
     // TODO: Execute CONTRACT_ADDR's ExecuteMsg::Loan action
     // ExecuteMsg variant:
     // https://github.com/ezekiiel/cw-flash-loan/blob/3b77e6bc2c1c02f359c3430329c77917e3b9b3fc/contracts/cw-flash-loan/src/msg.rs#L25
+    const execution: Promise<ExecuteResult> = Promise.reject(
+      new Error('TODO: Implement execute call')
+    )
     // const execution = ...
 
     execution
@@ -142,7 +145,7 @@ const Home: NextPage = () => {
                   width={16}
                   height={16}
                 />
-                <Mono>Juno</Mono>
+                <Mono>{DENOM_NAME}</Mono>
               </div>
             ) : (
               <Mono>{amountError}</Mono>

@@ -11,7 +11,7 @@ import {
 
 import { toast } from 'react-hot-toast'
 
-import { SigningCosmWasmClient } from '@cosmjs/cosmwasm-stargate'
+import { ExecuteResult, SigningCosmWasmClient } from '@cosmjs/cosmwasm-stargate'
 
 import { Background } from '../components/Background'
 import { BigCard } from '../components/BigCard'
@@ -30,7 +30,7 @@ import {
   ProvidedPercentLoading,
 } from '../components/Provided'
 
-import { CONTRACT_ADDR, FEE_DENOM } from '../util/constants'
+import { DENOM_NAME } from '../util/constants'
 import {
   convertDenomToMicroDenom,
   convertMicroDenomToDenom,
@@ -75,7 +75,7 @@ const Provide: NextPage = () => {
 
     const nativeAmount = convertDenomToMicroDenom(amount)
     if (Number(nativeAmount) > balance) {
-      return `Greater than Juno balance (${convertMicroDenomToDenom(balance)}).`
+      return `Greater than ${DENOM_NAME} balance (${convertMicroDenomToDenom(balance)}).`
     } else if (amount <= 0) {
       return 'Not positive.'
     } else {
@@ -114,6 +114,9 @@ const Provide: NextPage = () => {
     // TODO: Execute CONTRACT_ADDR's ExecuteMsg::Provide action
     // ExecuteMsg variant:
     // https://github.com/ezekiiel/cw-flash-loan/blob/3b77e6bc2c1c02f359c3430329c77917e3b9b3fc/contracts/cw-flash-loan/src/msg.rs#L27
+    const execution: Promise<ExecuteResult> = Promise.reject(
+      new Error('TODO: Implement execute call')
+    )
     // const execution = ...
 
     execution
@@ -147,6 +150,9 @@ const Provide: NextPage = () => {
     // TODO: Execute CONTRACT_ADDR's ExecuteMsg::Withdraw action
     // ExecuteMsg variant:
     // https://github.com/ezekiiel/cw-flash-loan/blob/3b77e6bc2c1c02f359c3430329c77917e3b9b3fc/contracts/cw-flash-loan/src/msg.rs#L28
+    const execution: Promise<ExecuteResult> = Promise.reject(
+      new Error('TODO: Implement execute call')
+    )
     // const execution = ...
 
     execution
@@ -185,7 +191,7 @@ const Provide: NextPage = () => {
                   width={16}
                   height={16}
                 />
-                <Mono>Juno</Mono>
+                <Mono>{DENOM_NAME}</Mono>
               </div>
             </div>
             {provided.state === 'hasValue' && provided.contents !== '0' && (
@@ -220,7 +226,7 @@ const Provide: NextPage = () => {
                   height={16}
                 />
                 <Mono>
-                  Juno (={' '}
+                  {DENOM_NAME} (={' '}
                   <Loader
                     loading={loading}
                     fallback={<ProvidedPercentLoading amount={amount} />}

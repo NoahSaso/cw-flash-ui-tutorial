@@ -14,11 +14,11 @@ export interface ProvidedPercentProps {
 
 export const Provided: FC<ProvidedProps> = () => {
   const { address } = useWallet()
-  const provied = useRecoilValue(
+  const provided = useRecoilValue(
     address ? providedSelector(address) : constSelector('0')
   )
 
-  return <>{convertMicroDenomToDenom(provied)}</>
+  return <>{convertMicroDenomToDenom(provided)}</>
 }
 
 export const ProvidedLoading: FC<ProvidedProps> = () => (
