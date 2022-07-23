@@ -619,7 +619,7 @@ const fee = config.fee
 </details>
 <br />
 
-### (2) `selectors/contract.ts` line 47
+### (2) `selectors/contract.ts` line 48
 
 Now we want to inform the user how much their wallet has already provided to the
 flash loan smart contract. Assume we know the wallet address (`walletAddress`)
@@ -789,7 +789,7 @@ const execution = client.execute(
 </details>
 <br />
 
-### (5) `pages/provide.tsx` line 147
+### (5) `pages/provide.tsx` line 150
 
 Now the market is down and we need to pay rent because we live in late-stage
 capitalism and life is hard. Let's withdraw our provided JUNO from the flash

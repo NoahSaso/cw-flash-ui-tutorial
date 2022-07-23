@@ -30,7 +30,7 @@ import {
   ProvidedPercentLoading,
 } from '../components/Provided'
 
-import { DENOM_NAME } from '../util/constants'
+import { CONTRACT_ADDR, DENOM_NAME, FEE_DENOM } from '../util/constants'
 import {
   convertDenomToMicroDenom,
   convertMicroDenomToDenom,
