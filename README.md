@@ -2,6 +2,11 @@
 
 ## Installation
 
+First, [install Node.js](https://nodejs.org), then [install
+Yarn](https://classic.yarnpkg.com/lang/en/docs/install).
+
+Then, clone this repo and set it up:
+
 ```bash
 git clone https://github.com/NoahSaso/cw-flash-ui-tutorial.git
 cd cw-flash-ui-tutorial
