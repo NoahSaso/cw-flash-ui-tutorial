@@ -6,3 +6,6 @@ export const FEE_DENOM = process.env.NEXT_PUBLIC_FEE_DENOM as string
 export const DENOM_NAME = process.env.NEXT_PUBLIC_DENOM_NAME as string
 
 export const CONTRACT_ADDR = process.env.NEXT_PUBLIC_CONTRACT_ADDR as string
+
+export const MINTSCAN_TXS_PREFIX = process.env
+  .NEXT_PUBLIC_MINTSCAN_TXS_PREFIX as string
